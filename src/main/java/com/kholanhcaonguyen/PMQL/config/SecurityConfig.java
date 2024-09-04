@@ -22,21 +22,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests((requests) -> requests
+                .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/api/login", "/api/register").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(formLogin -> formLogin
-                        .loginProcessingUrl("/api/login")
-                        .successHandler((request, response, authentication) -> {
-                            // Xử lý khi đăng nhập thành công
-                            response.setStatus(HttpServletResponse.SC_OK);
-                        })
-                        .failureHandler((request, response, exception) -> {
-                            // Xử lý khi đăng nhập thất bại
-                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        })
-                        .permitAll()
+                        .disable() // Disable default form login
                 )
                 .logout(logout -> logout
                         .logoutUrl("/api/logout")

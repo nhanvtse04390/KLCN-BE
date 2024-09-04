@@ -18,13 +18,15 @@ public class AppUserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         AppUser appUser = repo.findByEmail(email);
 
-        if(appUser != null) {
-            var springUser = User.withUsername(appUser.getEmail())
-                    .password(appUser.getPassword())
-                    .roles(appUser.getRole())
-                    .build();
-            return springUser;
+        if (appUser == null) {
+            throw new UsernameNotFoundException("User not found with email: " + email);
         }
-        return null;
+        // Ensure roles are prefixed with "ROLE_"
+        String[] roles = appUser.getRole() != null ? new String[] { "ROLE_" + appUser.getRole() } : new String[] { "ROLE_USER" };
+
+        return User.withUsername(appUser.getEmail())
+                .password(appUser.getPassword())
+                .roles(roles)
+                .build();
     }
 }

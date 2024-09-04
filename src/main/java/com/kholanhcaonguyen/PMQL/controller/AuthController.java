@@ -25,7 +25,7 @@ public class AuthController {
     private AppUserRepository repo;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response) {
+    public ResponseEntity<ApiResponse<String>> login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response) {
         // Xác thực người dùng
         if ("user".equals(userLoginRequest.getUsername()) && "password".equals(userLoginRequest.getPassword())) {
             // Tạo cookie
@@ -35,9 +35,10 @@ public class AuthController {
             cookie.setPath("/");
             response.addCookie(cookie);
 
-            return ResponseEntity.ok("Đăng nhập thành công!");
+            return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Đăng nhập thành công!", "example-token"));
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sai thông tin đăng nhập!");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), "Sai thông tin đăng nhập!", null));
         }
     }
 
@@ -83,5 +84,4 @@ public class AuthController {
                     .body(new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred: " + ex.getMessage(), null));
         }
     }
-
 }

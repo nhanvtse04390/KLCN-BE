@@ -5,15 +5,13 @@ import com.kholanhcaonguyen.PMQL.entity.RegisterDto;
 import com.kholanhcaonguyen.PMQL.payload.ApiResponse;
 import com.kholanhcaonguyen.PMQL.payload.UserLoginRequest;
 import com.kholanhcaonguyen.PMQL.repository.AppUserRepository;
+import com.kholanhcaonguyen.PMQL.service.JwtService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Date;
 
@@ -24,22 +22,27 @@ public class AuthController {
     @Autowired
     private AppUserRepository repo;
 
-    @PostMapping("/login")
-    public ResponseEntity<ApiResponse<String>> login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response) {
-        // Xác thực người dùng
-        if ("user".equals(userLoginRequest.getUsername()) && "password".equals(userLoginRequest.getPassword())) {
-            // Tạo cookie
-            Cookie cookie = new Cookie("authToken", "example-token");
-            cookie.setHttpOnly(true);
-            cookie.setMaxAge(24 * 60 * 60); // 1 ngày
-            cookie.setPath("/");
-            response.addCookie(cookie);
+    @Autowired
+    private JwtService jwtService;
 
-            return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Đăng nhập thành công!", "example-token"));
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), "Sai thông tin đăng nhập!", null));
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<String>> login(@RequestBody UserLoginRequest userLoginRequest) {
+        // Tìm kiếm người dùng trong cơ sở dữ liệu theo email
+        AppUser appUser = repo.findByEmail(userLoginRequest.getUsername());
+
+        // Kiểm tra nếu người dùng tồn tại và mật khẩu đúng
+        if (appUser != null) {
+            BCryptPasswordEncoder bCryptEncoder = new BCryptPasswordEncoder();
+            if (bCryptEncoder.matches(userLoginRequest.getPassword(), appUser.getPassword())) {
+                // Tạo token JWT
+                String token = jwtService.generateToken(appUser);
+                return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Đăng nhập thành công!", token));
+            }
         }
+
+        // Trả về thông báo lỗi khi thông tin đăng nhập không đúng
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), "Sai thông tin đăng nhập!", null));
     }
 
     @PostMapping("/register")

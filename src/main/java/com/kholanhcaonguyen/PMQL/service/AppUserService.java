@@ -22,7 +22,7 @@ public class AppUserService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found with email: " + email);
         }
         // Ensure roles are prefixed with "ROLE_"
-        String[] roles = appUser.getRole() != null ? new String[] { "ROLE_" + appUser.getRole() } : new String[] { "ROLE_USER" };
+        String[] roles = appUser.getRole() != null ? new String[] { appUser.getRole() } : new String[] { "client" };
 
         return User.withUsername(appUser.getEmail())
                 .password(appUser.getPassword())

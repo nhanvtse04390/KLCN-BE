@@ -2,10 +2,12 @@ package com.kholanhcaonguyen.PMQL.filter;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import com.kholanhcaonguyen.PMQL.service.AppUserService;
 
@@ -15,15 +17,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private String secretKey = "s4h7Y4aE77JphxZtnR+z8ih8v1w3LxPg78tT+6kz4Ps="; // Secret key for JWT
+    @Value("${jwt.secret}")
+    private String secretKey; // Secret key for JWT
 
-    private final AppUserService appUserService;
-
-    public JwtAuthenticationFilter(AppUserService appUserService) {
-        this.appUserService = appUserService;
-    }
+    @Autowired
+    private AppUserService appUserService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)

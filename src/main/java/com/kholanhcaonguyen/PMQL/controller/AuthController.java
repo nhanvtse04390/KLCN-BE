@@ -30,19 +30,24 @@ public class AuthController {
         // Tìm kiếm người dùng trong cơ sở dữ liệu theo email
         AppUser appUser = repo.findByEmail(userLoginRequest.getUsername());
 
-        // Kiểm tra nếu người dùng tồn tại và mật khẩu đúng
-        if (appUser != null) {
-            BCryptPasswordEncoder bCryptEncoder = new BCryptPasswordEncoder();
-            if (bCryptEncoder.matches(userLoginRequest.getPassword(), appUser.getPassword())) {
-                // Tạo token JWT
-                String token = jwtService.generateToken(appUser);
-                return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Đăng nhập thành công!", token));
-            }
+        // Kiểm tra nếu người dùng không tồn tại
+        if (appUser == null) {
+            // Trả về thông báo lỗi với mã 404 - Not Found nếu không tìm thấy người dùng
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "Người dùng không tồn tại!", null));
         }
 
-        // Trả về thông báo lỗi khi thông tin đăng nhập không đúng
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), "Sai thông tin đăng nhập!", null));
+        // Kiểm tra nếu mật khẩu không đúng
+        BCryptPasswordEncoder bCryptEncoder = new BCryptPasswordEncoder();
+        if (!bCryptEncoder.matches(userLoginRequest.getPassword(), appUser.getPassword())) {
+            // Trả về thông báo lỗi với mã 401 - Unauthorized nếu mật khẩu không đúng
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), "Sai mật khẩu!", null));
+        }
+
+        // Tạo token JWT khi thông tin đăng nhập đúng
+        String token = jwtService.generateToken(appUser);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Đăng nhập thành công!", token));
     }
 
     @PostMapping("/register")

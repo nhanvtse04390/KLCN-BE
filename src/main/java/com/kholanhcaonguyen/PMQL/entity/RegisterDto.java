@@ -13,6 +13,9 @@ public class RegisterDto {
     @Email
     private String email;
 
+    @NotEmpty
+    private String role;
+
     private String phone;
 
     private String address;
@@ -26,6 +29,14 @@ public class RegisterDto {
 
     public String getFirstName() {
         return firstName;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public void setFirstName(String firstName) {

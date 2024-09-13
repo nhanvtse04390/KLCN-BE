@@ -77,7 +77,11 @@ public class AuthController {
             newUser.setEmail(registerDto.getEmail());
             newUser.setPhone(registerDto.getPhone());
             newUser.setAddress(registerDto.getAddress());
-            newUser.setRole("client");
+            if(registerDto.getAddress() == null) {
+                newUser.setRole(registerDto.getRole());
+            } else {
+                newUser.setRole("client");
+            }
             newUser.setCreateAt(new Date());
             newUser.setPassword(bCryptEncoder.encode(registerDto.getPassword()));
 

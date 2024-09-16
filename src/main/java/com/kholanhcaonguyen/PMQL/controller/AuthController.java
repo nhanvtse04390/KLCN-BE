@@ -1,5 +1,6 @@
 package com.kholanhcaonguyen.PMQL.controller;
 
+import com.kholanhcaonguyen.PMQL.dto.UserLoginResponse;
 import com.kholanhcaonguyen.PMQL.entity.AppUser;
 import com.kholanhcaonguyen.PMQL.entity.RegisterDto;
 import com.kholanhcaonguyen.PMQL.payload.ApiResponse;
@@ -26,7 +27,7 @@ public class AuthController {
     private JwtService jwtService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<String>> login(@RequestBody UserLoginRequest userLoginRequest) {
+    public ResponseEntity<ApiResponse<UserLoginResponse>> login(@RequestBody UserLoginRequest userLoginRequest) {
         // Tìm kiếm người dùng trong cơ sở dữ liệu theo email
         AppUser appUser = repo.findByEmail(userLoginRequest.getUsername());
 
@@ -47,7 +48,20 @@ public class AuthController {
 
         // Tạo token JWT khi thông tin đăng nhập đúng
         String token = jwtService.generateToken(appUser);
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Đăng nhập thành công!", token));
+
+        // Tạo đối tượng response chứa thông tin người dùng và token
+        UserLoginResponse loginResponse = new UserLoginResponse(
+                appUser.getId(),
+                appUser.getName(),
+                appUser.getEmail(),
+                appUser.getRole(),
+                appUser.getPhone(),
+                appUser.getAddress(),
+                token
+        );
+
+        // Trả về thông tin tài khoản và token
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Đăng nhập thành công!", loginResponse));
     }
 
     @PostMapping("/register")
@@ -56,7 +70,7 @@ public class AuthController {
         if (!registerDto.getPassword().equals(registerDto.getConfirmPassword())) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "Password and confirm password do not match", null));
+                    .body(new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "Mật khẩu không trùng khớp!!!", null));
         }
 
         // Kiểm tra email đã tồn tại
@@ -64,7 +78,7 @@ public class AuthController {
         if (appUser != null) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "Email address is already used", null));
+                    .body(new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "Địa chỉ email này đã được sử dụng!!!", null));
         }
 
         try {
@@ -72,24 +86,23 @@ public class AuthController {
 
             // Tạo người dùng mới
             AppUser newUser = new AppUser();
-            newUser.setFirstName(registerDto.getFirstName());
-            newUser.setLastName(registerDto.getLastName());
+            newUser.setFirstName(registerDto.getName());
             newUser.setEmail(registerDto.getEmail());
             newUser.setPhone(registerDto.getPhone());
             newUser.setAddress(registerDto.getAddress());
-            if(registerDto.getAddress() == null) {
+            if(registerDto.getRole() != null) {
                 newUser.setRole(registerDto.getRole());
             } else {
-                newUser.setRole("client");
+                newUser.setRole("KH");
             }
-            newUser.setCreateAt(new Date());
+            newUser.setCreateBy(registerDto.getCreateBy());
             newUser.setPassword(bCryptEncoder.encode(registerDto.getPassword()));
 
             repo.save(newUser);
 
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(new ApiResponse<>(HttpStatus.OK.value(), "User registered successfully!", null));
+                    .body(new ApiResponse<>(HttpStatus.OK.value(), "Tạo tài khoản thành công!!!", null));
         } catch (Exception ex) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)

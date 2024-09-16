@@ -2,12 +2,12 @@ package com.kholanhcaonguyen.PMQL.entity;
 
 import jakarta.validation.constraints.*;
 
+import java.util.Date;
+
 public class RegisterDto {
-    @NotEmpty
-    private String firstName;
 
     @NotEmpty
-    private String lastName;
+    private String name;
 
     @NotEmpty
     @Email
@@ -26,10 +26,7 @@ public class RegisterDto {
 
     private String confirmPassword;
 
-
-    public String getFirstName() {
-        return firstName;
-    }
+    private String createBy;
 
     public String getRole() {
         return role;
@@ -39,16 +36,13 @@ public class RegisterDto {
         this.role = role;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+
+    public String getName() {
+        return name;
     }
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -89,5 +83,13 @@ public class RegisterDto {
 
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
     }
 }

@@ -11,8 +11,7 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String firstName;
-    private String lastName;
+    private String name;
 
     private String role;
 
@@ -24,6 +23,12 @@ public class AppUser {
     private String password;
     private Date createAt;
 
+    private String createBy;
+
+    private Date updateAt;
+
+    private String updateBy;
+
     public Long getId() {
         return id;
     }
@@ -32,20 +37,12 @@ public class AppUser {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setFirstName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -94,5 +91,33 @@ public class AppUser {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public Date getUpdateAt() {
+        return updateAt;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public void setUpdateAt(Date updateAt) {
+        this.updateAt = updateAt;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
     }
 }

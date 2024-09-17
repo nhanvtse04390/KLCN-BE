@@ -86,7 +86,7 @@ public class AuthController {
 
             // Tạo người dùng mới
             AppUser newUser = new AppUser();
-            newUser.setFirstName(registerDto.getName());
+            newUser.setName(registerDto.getName());
             newUser.setEmail(registerDto.getEmail());
             newUser.setPhone(registerDto.getPhone());
             newUser.setAddress(registerDto.getAddress());
@@ -95,7 +95,8 @@ public class AuthController {
             } else {
                 newUser.setRole("KH");
             }
-            newUser.setCreateBy(registerDto.getCreateBy());
+            newUser.setCreatedBy(registerDto.getCreatedBy());
+            newUser.setCreatedAt(new Date());
             newUser.setPassword(bCryptEncoder.encode(registerDto.getPassword()));
 
             repo.save(newUser);

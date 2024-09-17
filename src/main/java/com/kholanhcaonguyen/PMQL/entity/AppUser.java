@@ -21,13 +21,13 @@ public class AppUser {
     private String phone;
     private String address;
     private String password;
-    private Date createAt;
+    private Date createdAt;
 
-    private String createBy;
+    private String createdBy;
 
-    private Date updateAt;
+    private Date updatedAt;
 
-    private String updateBy;
+    private String updatedBy;
 
     public Long getId() {
         return id;
@@ -41,8 +41,16 @@ public class AppUser {
         return name;
     }
 
-    public void setFirstName(String name) {
+    public void setName(String name) {
         this.name = name;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getEmail() {
@@ -77,47 +85,35 @@ public class AppUser {
         this.password = password;
     }
 
-    public Date getCreateAt() {
-        return createAt;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public String getRole() {
-        return role;
+    public String getCreatedBy() {
+        return createdBy;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
-    public String getCreateBy() {
-        return createBy;
+    public Date getUpdatedAt() {
+        return updatedAt;
     }
 
-    public Date getUpdateAt() {
-        return updateAt;
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
-    public String getUpdateBy() {
-        return updateBy;
+    public String getUpdatedBy() {
+        return updatedBy;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
-    }
-
-    public void setUpdateAt(Date updateAt) {
-        this.updateAt = updateAt;
-    }
-
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
     }
 }

@@ -26,7 +26,7 @@ public class RegisterDto {
 
     private String confirmPassword;
 
-    private String createBy;
+    private String createdBy;
 
     public String getRole() {
         return role;
@@ -85,11 +85,11 @@ public class RegisterDto {
         this.confirmPassword = confirmPassword;
     }
 
-    public String getCreateBy() {
-        return createBy;
+    public String getCreatedBy() {
+        return createdBy;
     }
 
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 }

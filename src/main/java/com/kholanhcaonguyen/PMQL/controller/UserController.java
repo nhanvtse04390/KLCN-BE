@@ -20,8 +20,14 @@ public class UserController {
 
     // Lấy danh sách tất cả người dùng
     @GetMapping
-    public ResponseEntity<ApiResponse<List<AppUser>>> getAllUsers() {
-        List<AppUser> users = userRepository.findAll();
+    public ResponseEntity<ApiResponse<List<AppUser>>> getAllUsers(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "phone", required = false) String phone,
+            @RequestParam(value = "createdBy", required = false) String createdBy,
+            @RequestParam(value = "updatedBy", required = false) String updatedBy) {
+
+        List<AppUser> users = userRepository.searchUsers(name, email, phone, createdBy, updatedBy);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Lấy danh sách người dùng thành công", users));
     }
 
